@@ -1,0 +1,28 @@
+{
+	"folders": [
+		{
+			"path": "{css,js,pages,assets"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "assets"
+		},
+		{
+			"path": "css"
+		},
+		{
+			"path": "employee-portal"
+		},
+		{
+			"path": "js"
+		},
+		{
+			"path": "pages"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "attendance-payroll-app"
+	}
+}
