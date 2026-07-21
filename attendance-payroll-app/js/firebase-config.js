@@ -17,16 +17,14 @@ import {
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-// >>>>>>>>>>>>>>>>>>>>>>>> REPLACE THIS <<<<<<<<<<<<<<<<<<<<<<<<
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyDjbipXadM-tw57Z8a66_UPjO-EWSXxirE",
+  authDomain: "hrautoamtionsystem.firebaseapp.com",
+  projectId: "hrautoamtionsystem",
+  storageBucket: "hrautoamtionsystem.firebasestorage.app",
+  messagingSenderId: "121592958505",
+  appId: "1:121592958505:web:aea960d1668376a57f5638",
 };
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
