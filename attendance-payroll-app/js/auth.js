@@ -1,5 +1,13 @@
 // ============================================================
 // AUTH: login, forgot password, logout, route guard
+// ------------------------------------------------------------
+// IMPORTANT: employees now have their own real login accounts too
+// (Employee Portal). Firebase Auth alone can't tell an admin apart
+// from an employee — both are just "a valid signed-in user" to it.
+// So this file explicitly checks the `portalLinks` collection
+// (written whenever an admin sets up an employee's Portal Access)
+// to make sure whoever is signing in here is NOT a portal employee
+// before letting them into the admin app.
 // ============================================================
 
 import { auth, FIREBASE_CONFIGURED } from "./firebase-config.js";
@@ -10,9 +18,19 @@ import {
   signOut,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { toast, showLoader } from "./utils.js";
+import { dbGetById } from "./db.js";
 
 const DEMO_MODE = !FIREBASE_CONFIGURED;
 const DEMO_SESSION_KEY = "demo_admin_session";
+
+async function isPortalEmployeeEmail(email) {
+  if (!email) return false;
+  const link = await dbGetById("portalLinks", email.trim()).catch(() => null);
+  return !!link;
+}
+
+const EMPLOYEE_ACCOUNT_MESSAGE =
+  'This login belongs to an Employee Portal account, not an admin account. Please use the Employee Portal instead.';
 
 // ---------------- LOGIN PAGE ----------------
 const loginForm = document.getElementById("login-form");
@@ -23,8 +41,14 @@ if (loginForm) {
       window.location.href = "pages/dashboard.html";
     }
   } else {
-    onAuthStateChanged(auth, (user) => {
-      if (user) window.location.href = "pages/dashboard.html";
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        if (await isPortalEmployeeEmail(user.email)) {
+          await signOut(auth);
+          return;
+        }
+        window.location.href = "pages/dashboard.html";
+      }
     });
   }
 
@@ -44,11 +68,19 @@ if (loginForm) {
 
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    errorText.textContent = "";
+    errorText.innerHTML = "";
     const email = document.getElementById("login-email").value.trim();
     const password = document.getElementById("login-password").value;
     showLoader(true);
     try {
+      // Block employee accounts from the admin login BEFORE attempting
+      // sign-in, in both demo and live mode.
+      if (await isPortalEmployeeEmail(email)) {
+        errorText.innerHTML = `${EMPLOYEE_ACCOUNT_MESSAGE} <a class="link-primary" href="employee-portal/index.html">Go to Employee Portal →</a>`;
+        showLoader(false);
+        return;
+      }
+
       if (DEMO_MODE) {
         // Demo mode: accept any email/password combo, or the seeded admin
         await new Promise((r) => setTimeout(r, 500));
@@ -56,7 +88,18 @@ if (loginForm) {
         window.location.href = "pages/dashboard.html";
         return;
       }
-      await signInWithEmailAndPassword(auth, email, password);
+
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+
+      // Double-check post-sign-in too (covers the case where portal
+      // access was granted to this email AFTER they last logged in here).
+      if (await isPortalEmployeeEmail(cred.user.email)) {
+        await signOut(auth);
+        errorText.innerHTML = `${EMPLOYEE_ACCOUNT_MESSAGE} <a class="link-primary" href="employee-portal/index.html">Go to Employee Portal →</a>`;
+        showLoader(false);
+        return;
+      }
+
       window.location.href = "pages/dashboard.html";
     } catch (err) {
       errorText.textContent = friendlyAuthError(err.code);
@@ -101,11 +144,24 @@ export function requireAuth(callback) {
       window.location.href = "../index.html";
       return;
     }
-    callback(JSON.parse(session));
+    const parsed = JSON.parse(session);
+    isPortalEmployeeEmail(parsed.email).then((isEmployee) => {
+      if (isEmployee) {
+        localStorage.removeItem(DEMO_SESSION_KEY);
+        window.location.href = "../index.html";
+        return;
+      }
+      callback(parsed);
+    });
     return;
   }
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
     if (!user) {
+      window.location.href = "../index.html";
+      return;
+    }
+    if (await isPortalEmployeeEmail(user.email)) {
+      await signOut(auth);
       window.location.href = "../index.html";
       return;
     }
