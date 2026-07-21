@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Shifts | Liqvigreen</title>
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../css/responsive.css" />
+</head>
+<body>
+
+<div id="app-content" style="display:none;">
+  <div class="toolbar">
+    <div></div>
+    <button class="btn btn-primary" id="add-shift-btn">+ Create Shift</button>
+  </div>
+
+  <div id="shifts-grid" class="stats-grid" style="grid-template-columns: repeat(3, 1fr);"></div>
+</div>
+
+<!-- Shift Modal -->
+<div class="modal-overlay" id="shift-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="shift-modal-title">Create Shift</h3>
+      <button class="modal-close" id="close-modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="shift-form">
+        <input type="hidden" id="shift-id" />
+        <div class="form-group">
+          <label>Shift Name *</label>
+          <input class="form-control" id="shift-name" placeholder="e.g. Morning Shift" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Start Time *</label>
+            <input class="form-control" type="time" id="shift-start" required />
+          </div>
+          <div class="form-group">
+            <label>End Time *</label>
+            <input class="form-control" type="time" id="shift-end" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Grace Time (minutes)</label>
+          <input class="form-control" type="number" id="shift-grace" min="0" value="15" />
+        </div>
+        <div class="form-group">
+          <label>Weekly Off Days</label>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <label><input type="checkbox" value="Sunday" class="off-day" /> Sun</label>
+            <label><input type="checkbox" value="Monday" class="off-day" /> Mon</label>
+            <label><input type="checkbox" value="Tuesday" class="off-day" /> Tue</label>
+            <label><input type="checkbox" value="Wednesday" class="off-day" /> Wed</label>
+            <label><input type="checkbox" value="Thursday" class="off-day" /> Thu</label>
+            <label><input type="checkbox" value="Friday" class="off-day" /> Fri</label>
+            <label><input type="checkbox" value="Saturday" class="off-day" /> Sat</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Late Mark Rules</label>
+          <textarea class="form-control" id="shift-lateRules" rows="2" placeholder="e.g. Late beyond grace time marks employee as Late; 3 late marks = 1 half day"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" id="cancel-modal">Cancel</button>
+      <button class="btn btn-primary" id="save-shift-btn">Save Shift</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="../js/shifts.js"></script>
+</body>
+</html>

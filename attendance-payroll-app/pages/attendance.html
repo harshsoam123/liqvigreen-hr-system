@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Attendance | Liqvigreen</title>
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../css/responsive.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<div id="app-content" style="display:none;">
+
+  <div class="toolbar">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <input type="text" id="search-input" placeholder="Search employee by name or ID..." />
+    </div>
+    <input type="date" class="filter-select" id="date-picker" />
+    <select class="filter-select" id="filter-department"><option value="">All Departments</option></select>
+    <select class="filter-select" id="filter-status">
+      <option value="">All Status</option>
+      <option value="present">Present</option><option value="absent">Absent</option><option value="leave">Leave</option>
+      <option value="half_day">Half Day</option><option value="late">Late</option><option value="partial_exit">Partial Exit</option>
+      <option value="work_from_home">Work From Home</option><option value="holiday">Holiday</option>
+    </select>
+    <button class="btn btn-outline" id="import-attendance-btn">📥 Import from Biometric Machine</button>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>Mark / Update Attendance</h3>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Employee</th><th>Department</th><th>Status</th><th>Check In</th><th>Check Out</th><th>Working Hrs</th><th>OT Hrs</th><th>Source</th><th>Remarks</th><th>Action</th></tr>
+        </thead>
+        <tbody id="attendance-tbody"></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+</div>
+
+<!-- Mark Attendance Modal -->
+<div class="modal-overlay" id="attendance-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Mark Attendance</h3>
+      <button class="modal-close" id="close-modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="attendance-form">
+        <input type="hidden" id="att-empId" />
+        <input type="hidden" id="att-recordId" />
+        <div class="form-group">
+          <label>Employee</label>
+          <input class="form-control" id="att-empName" disabled />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date</label>
+            <input class="form-control" type="date" id="att-date" required />
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select class="form-control" id="att-status" required>
+              <option value="present">Present</option>
+              <option value="absent">Absent</option>
+              <option value="leave">Leave</option>
+              <option value="half_day">Half Day</option>
+              <option value="late">Late</option>
+              <option value="partial_exit">Partial Exit</option>
+              <option value="work_from_home">Work From Home</option>
+              <option value="holiday">Holiday</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Check In Time</label>
+            <input class="form-control" type="time" id="att-checkIn" />
+          </div>
+          <div class="form-group">
+            <label>Check Out Time</label>
+            <input class="form-control" type="time" id="att-checkOut" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Remarks</label>
+          <textarea class="form-control" id="att-remarks" rows="2" placeholder="Optional remarks..."></textarea>
+        </div>
+        <p class="form-hint">Working hours, overtime, late minutes, and early-exit minutes are calculated automatically from the employee's shift once you save.</p>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" id="cancel-modal">Cancel</button>
+      <button class="btn btn-primary" id="save-attendance-btn">Save Attendance</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import Attendance Modal (Biometric Machine Export - any brand) -->
+<div class="modal-overlay" id="import-modal">
+  <div class="modal modal-lg">
+    <div class="modal-head">
+      <h3>Import Attendance from Biometric Machine</h3>
+      <button class="modal-close" id="close-import-modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p class="form-hint mb-16">
+        Works with <strong>any biometric machine's software export</strong> (eSSL, ZKTeco, Realtime, Matrix, etc.) —
+        upload the CSV/Excel file and confirm which column is which below. The app auto-guesses the mapping, but you
+        can change any of it to match your file exactly.
+      </p>
+
+      <label class="file-drop">
+        Step 1: Click to select the CSV / Excel file exported from your biometric machine software
+        <input type="file" id="import-file" accept=".csv,.xls,.xlsx" />
+      </label>
+
+      <div id="import-mapping-section" style="display:none; margin-top:18px;">
+        <div class="divider"></div>
+        <h4 style="margin: 0 0 10px;">Step 2: Confirm Column Mapping</h4>
+        <p class="form-hint" id="header-row-hint" style="margin-bottom:14px;"></p>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Employee Identifier Column</label>
+            <select class="form-control" id="map-empColumn"></select>
+          </div>
+          <div class="form-group">
+            <label>Match Employees By</label>
+            <select class="form-control" id="map-matchType">
+              <option value="code">Employee Code (e.g. EMP0001)</option>
+              <option value="name">Employee Name</option>
+              <option value="mobile">Mobile Number</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>Date Column</label>
+            <select class="form-control" id="map-dateColumn"></select>
+          </div>
+        </div>
+
+        <div class="form-group full">
+          <label>Punch Format in this File</label>
+          <div style="display:flex; gap:16px; margin-top:4px;">
+            <label style="font-weight:400; font-size:13.5px;"><input type="radio" name="punch-mode" value="separate" checked /> Separate "In Time" &amp; "Out Time" columns</label>
+            <label style="font-weight:400; font-size:13.5px;"><input type="radio" name="punch-mode" value="single" /> Single "Punch Time" column (raw log, multiple rows per day)</label>
+          </div>
+        </div>
+
+        <div class="form-grid" id="mode-separate-fields">
+          <div class="form-group"><label>In Time Column</label><select class="form-control" id="map-inColumn"></select></div>
+          <div class="form-group"><label>Out Time Column</label><select class="form-control" id="map-outColumn"></select></div>
+        </div>
+        <div class="form-grid" id="mode-single-fields" style="display:none;">
+          <div class="form-group full"><label>Punch Time Column</label><select class="form-control" id="map-timeColumn"></select></div>
+          <p class="form-hint full">Each employee's earliest punch that day becomes Check In, and their latest punch becomes Check Out.</p>
+        </div>
+
+        <button type="button" class="btn btn-outline" id="preview-mapping-btn">Preview Mapping</button>
+      </div>
+
+      <div id="import-preview" style="margin-top:16px;"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" id="cancel-import-modal">Cancel</button>
+      <button class="btn btn-primary" id="import-process-btn" disabled>Import Attendance</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="../js/attendance.js"></script>
+</body>
+</html>

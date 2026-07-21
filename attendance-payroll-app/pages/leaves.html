@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Leave Requests | Liqvigreen</title>
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../css/responsive.css" />
+</head>
+<body>
+
+<div id="app-content" style="display:none;">
+
+  <div class="toolbar">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <input type="text" id="search-input" placeholder="Search employee..." />
+    </div>
+    <select class="filter-select" id="filter-status">
+      <option value="">All Status</option>
+      <option value="pending">Pending</option>
+      <option value="approved">Approved</option>
+      <option value="rejected">Rejected</option>
+    </select>
+    <select class="filter-select" id="filter-type">
+      <option value="">All Leave Types</option>
+      <option value="Casual Leave">Casual Leave</option>
+      <option value="Sick Leave">Sick Leave</option>
+      <option value="Paid Leave">Paid Leave</option>
+      <option value="Comp-Off">Comp-Off</option>
+      <option value="Unpaid Leave">Unpaid Leave</option>
+    </select>
+    <button class="btn btn-primary" id="add-leave-btn">+ Apply Leave (on behalf of employee)</button>
+  </div>
+
+  <div class="card">
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr><th>Employee</th><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Reason</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="leaves-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Add Leave Modal -->
+<div class="modal-overlay" id="leave-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Apply Leave</h3>
+      <button class="modal-close" id="close-modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="leave-form">
+        <div class="form-group">
+          <label>Employee *</label>
+          <select class="form-control" id="leave-empId" required></select>
+        </div>
+        <div class="form-group">
+          <label>Leave Type *</label>
+          <select class="form-control" id="leave-type" required>
+            <option value="Casual Leave">Casual Leave</option>
+            <option value="Sick Leave">Sick Leave</option>
+            <option value="Paid Leave">Paid Leave</option>
+            <option value="Comp-Off">Comp-Off</option>
+            <option value="Unpaid Leave">Unpaid Leave</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>From Date *</label><input class="form-control" type="date" id="leave-from" required /></div>
+          <div class="form-group"><label>To Date *</label><input class="form-control" type="date" id="leave-to" required /></div>
+        </div>
+        <div class="form-group">
+          <label>Reason</label>
+          <textarea class="form-control" id="leave-reason" rows="2"></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" id="cancel-modal">Cancel</button>
+      <button class="btn btn-primary" id="save-leave-btn">Submit Leave</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="../js/leaves.js"></script>
+</body>
+</html>

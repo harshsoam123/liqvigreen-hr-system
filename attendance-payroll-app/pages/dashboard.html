@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard | Liqvigreen</title>
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../css/responsive.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div id="app-content" style="display:none;">
+
+  <div class="stats-grid" id="stats-grid">
+    <!-- stat cards injected by dashboard.js -->
+  </div>
+
+  <div class="charts-grid">
+    <div class="card">
+      <div class="card-head">
+        <h3>Attendance Trend (Last 14 Days)</h3>
+      </div>
+      <div class="chart-wrap" style="height: 280px;">
+        <canvas id="trendChart"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <h3>Today's Attendance Breakdown</h3>
+      </div>
+      <div class="chart-wrap" style="height: 280px;">
+        <canvas id="donutChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>Recent Attendance Activity</h3>
+      <a class="link-primary" href="attendance.html">View all &rarr;</a>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table" id="recent-activity-table">
+        <thead>
+          <tr><th>Employee</th><th>Date</th><th>Status</th><th>Check In</th><th>Check Out</th><th>Remarks</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="../js/dashboard.js"></script>
+</body>
+</html>

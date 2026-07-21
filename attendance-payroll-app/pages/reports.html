@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Reports | Liqvigreen</title>
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../css/responsive.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<div id="app-content" style="display:none;">
+
+  <div class="card mb-16">
+    <div class="card-head"><h3>Generate Report</h3></div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Report Range</label>
+        <select class="form-control" id="range-type">
+          <option value="date">Specific Date</option>
+          <option value="week">Week</option>
+          <option value="month" selected>Month</option>
+          <option value="year">Year</option>
+        </select>
+      </div>
+      <div class="form-group" id="range-value-wrap">
+        <label id="range-value-label">Month</label>
+        <input class="form-control" type="month" id="range-value" />
+      </div>
+      <div class="form-group">
+        <label>Employee</label>
+        <select class="form-control" id="filter-employee"><option value="">All Employees</option></select>
+      </div>
+      <div class="form-group">
+        <label>Department</label>
+        <select class="form-control" id="filter-department"><option value="">All Departments</option></select>
+      </div>
+      <div class="form-group full">
+        <label>Shift</label>
+        <select class="form-control" id="filter-shift"><option value="">All Shifts</option></select>
+      </div>
+    </div>
+    <div style="display:flex; gap:10px; flex-wrap: wrap;">
+      <button class="btn btn-primary" id="generate-btn">Generate Report</button>
+      <button class="btn btn-outline" id="export-pdf-btn">Export PDF</button>
+      <button class="btn btn-outline" id="export-excel-btn">Export Excel</button>
+      <button class="btn btn-outline" id="export-csv-btn">Export CSV</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h3>Report Results</h3>
+      <span class="text-muted" id="result-count"></span>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table" id="report-table">
+        <thead>
+          <tr>
+            <th>Employee</th><th>Emp ID</th><th>Department</th><th>Present</th><th>Absent</th>
+            <th>Leave</th><th>Half Day</th><th>Late</th><th>Partial Exit</th><th>OT Hrs</th>
+            <th>Gross Salary</th><th>Deductions</th><th>Net Salary</th>
+          </tr>
+        </thead>
+        <tbody id="report-tbody">
+          <tr><td colspan="13" style="text-align:center; padding:30px;" class="text-muted">Choose filters and click "Generate Report".</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="../js/reports.js"></script>
+</body>
+</html>

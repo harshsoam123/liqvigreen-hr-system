@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Employees | Liqvigreen</title>
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../css/responsive.css" />
+</head>
+<body>
+
+<div id="app-content" style="display:none;">
+
+  <div class="toolbar">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <input type="text" id="search-input" placeholder="Search by name, ID, mobile, department..." />
+    </div>
+    <select class="filter-select" id="filter-department"><option value="">All Departments</option></select>
+    <select class="filter-select" id="filter-shift"><option value="">All Shifts</option></select>
+    <select class="filter-select" id="filter-status">
+      <option value="">All Status</option>
+      <option value="active">Active</option>
+      <option value="inactive">Inactive</option>
+    </select>
+    <button class="btn btn-primary" id="add-employee-btn">+ Add Employee</button>
+  </div>
+
+  <div class="card">
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Employee</th><th>Emp ID</th><th>Department</th><th>Designation</th>
+            <th>Shift</th><th>Mobile</th><th>Salary</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="employees-tbody"></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+</div>
+
+<!-- Add/Edit Employee Modal -->
+<div class="modal-overlay" id="employee-modal">
+  <div class="modal modal-lg">
+    <div class="modal-head">
+      <h3 id="modal-title">Add Employee</h3>
+      <button class="modal-close" id="close-modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="employee-form">
+        <input type="hidden" id="emp-id" />
+
+        <div class="tabs">
+          <button type="button" class="tab-btn active" data-tab="tab-personal">Personal</button>
+          <button type="button" class="tab-btn" data-tab="tab-job">Job & Salary</button>
+          <button type="button" class="tab-btn" data-tab="tab-bank">Bank & IDs</button>
+          <button type="button" class="tab-btn" data-tab="tab-docs">Documents</button>
+          <button type="button" class="tab-btn" data-tab="tab-portal">Portal Access</button>
+        </div>
+
+        <div class="tab-panel active" id="tab-personal">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label>Employee ID (Auto Generated)</label>
+              <input class="form-control" id="emp-code" disabled />
+            </div>
+            <div class="form-group"><label>Full Name *</label><input class="form-control" id="emp-fullName" required /></div>
+            <div class="form-group"><label>Father's Name</label><input class="form-control" id="emp-fatherName" /></div>
+            <div class="form-group"><label>Mobile Number *</label><input class="form-control" id="emp-mobile" required /></div>
+            <div class="form-group"><label>Email</label><input class="form-control" type="email" id="emp-email" /></div>
+            <div class="form-group full"><label>Address</label><textarea class="form-control" id="emp-address" rows="2"></textarea></div>
+            <div class="form-group"><label>Date of Birth</label><input class="form-control" type="date" id="emp-dob" /></div>
+            <div class="form-group"><label>Joining Date *</label><input class="form-control" type="date" id="emp-joiningDate" required /></div>
+            <div class="form-group full">
+              <label>Status</label>
+              <select class="form-control" id="emp-status"><option value="active">Active</option><option value="inactive">Inactive</option></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="tab-job">
+          <div class="form-grid">
+            <div class="form-group"><label>Department *</label><input class="form-control" id="emp-department" list="dept-list" required /></div>
+            <div class="form-group"><label>Designation</label><input class="form-control" id="emp-designation" /></div>
+            <div class="form-group full">
+              <label>Shift *</label>
+              <select class="form-control" id="emp-shiftId" required></select>
+            </div>
+            <div class="form-group full"><label>Monthly Salary (₹) *</label><input class="form-control" type="number" id="emp-monthlySalary" min="0" step="0.01" required /></div>
+            <div class="form-group">
+              <label>Paid Leaves / Month</label>
+              <input class="form-control" type="number" step="0.5" id="emp-paidLeavesPerMonth" placeholder="Leave blank to use default" />
+              <p class="form-hint">Leave blank to use the global default set in Salary Settings.</p>
+            </div>
+            <div class="form-group">
+              <label>Leaves Already Used (opening balance)</label>
+              <input class="form-control" type="number" step="0.5" id="emp-leaveUsedOpening" value="0" />
+            </div>
+            <div class="form-group full">
+              <label>Advance / Loan Balance Outstanding (₹)</label>
+              <input class="form-control" type="number" step="0.01" id="emp-advanceBalance" value="0" />
+              <p class="form-hint">Set an opening balance here; it updates automatically once you start generating Monthly Salary Sheets.</p>
+            </div>
+            <div class="divider full"></div>
+            <div class="form-group full"><p class="form-hint" style="margin:0; font-weight:700; color:var(--text);">Annual Leave Entitlements (used on the Employee Portal's Leave Balance cards)</p></div>
+            <div class="form-group"><label>Casual Leave (CL) / year</label><input class="form-control" type="number" step="0.5" id="emp-clEntitlement" value="12" /></div>
+            <div class="form-group"><label>Sick Leave (SL) / year</label><input class="form-control" type="number" step="0.5" id="emp-slEntitlement" value="12" /></div>
+            <div class="form-group"><label>Earned Leave (EL) / year</label><input class="form-control" type="number" step="0.5" id="emp-elEntitlement" value="15" /></div>
+            <div class="form-group"><label>Comp-Off Balance</label><input class="form-control" type="number" step="0.5" id="emp-compOffEntitlement" value="0" /></div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="tab-bank">
+          <div class="form-grid">
+            <div class="form-group"><label>Aadhaar Number</label><input class="form-control" id="emp-aadhaarNo" maxlength="12" /></div>
+            <div class="form-group"><label>PAN Number</label><input class="form-control" id="emp-panNo" maxlength="10" style="text-transform:uppercase;" /></div>
+            <div class="form-group"><label>Bank Account Number</label><input class="form-control" id="emp-bankAccount" /></div>
+            <div class="form-group"><label>IFSC Code</label><input class="form-control" id="emp-ifsc" style="text-transform:uppercase;" /></div>
+            <div class="form-group full"><label>UPI ID</label><input class="form-control" id="emp-upiId" placeholder="name@upi" /></div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="tab-docs">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Profile Photo</label>
+              <label class="file-drop">Click to upload photo<input type="file" id="emp-photo" accept="image/*" /></label>
+            </div>
+            <div class="form-group">
+              <label>Aadhaar Upload</label>
+              <label class="file-drop">Click to upload<input type="file" id="emp-aadhaarFile" /></label>
+            </div>
+            <div class="form-group">
+              <label>PAN Upload</label>
+              <label class="file-drop">Click to upload<input type="file" id="emp-panFile" /></label>
+            </div>
+            <div class="form-group">
+              <label>Resume Upload</label>
+              <label class="file-drop">Click to upload<input type="file" id="emp-resumeFile" /></label>
+            </div>
+            <div class="form-group full">
+              <label>Other Documents</label>
+              <label class="file-drop">Click to upload (multiple allowed)<input type="file" id="emp-otherFiles" multiple /></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="tab-portal">
+          <div id="portal-status-badge" class="mb-16"></div>
+          <p class="form-hint mb-16">
+            Give this employee their own login for the <strong>Employee Portal</strong> — a separate, lightweight app where
+            they can punch in/out (with live location &amp; device recorded automatically), view their own attendance
+            history and monthly report, and apply for leave. They can only ever see and act on their own data — never
+            anyone else's, and they cannot edit attendance themselves.
+          </p>
+          <div class="form-group">
+            <label>Portal Login Email</label>
+            <input class="form-control" type="email" id="emp-portalEmail" placeholder="employee@company.com" />
+            <p class="form-hint">Usually their personal email — this is what they'll use to sign in to the portal.</p>
+          </div>
+          <div class="form-group" id="portal-password-group">
+            <label>Set Portal Password</label>
+            <input class="form-control" type="text" id="emp-portalPassword" placeholder="Minimum 6 characters" />
+            <p class="form-hint">Share this with the employee directly. They can change it later from "Forgot password" on the portal login.</p>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" class="btn btn-primary" id="create-portal-access-btn">Create / Update Portal Login</button>
+            <button type="button" class="btn btn-outline" id="send-portal-reset-btn" style="display:none;">Send Password Reset Email</button>
+          </div>
+        </div>
+      </form>
+      <datalist id="dept-list">
+        <option value="Human Resources"></option><option value="Sales"></option><option value="Marketing"></option>
+        <option value="Engineering"></option><option value="Finance"></option><option value="Operations"></option>
+        <option value="Customer Support"></option>
+      </datalist>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" id="cancel-modal">Cancel</button>
+      <button class="btn btn-primary" id="save-employee-btn">Save Employee</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="../js/employees.js"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Employee Profile | Liqvigreen</title>
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../css/responsive.css" />
+</head>
+<body>
+
+<div id="app-content" style="display:none;">
+
+  <div class="card mb-16">
+    <div class="profile-header">
+      <img class="profile-photo" id="profile-photo" src="" alt="" />
+      <div class="profile-meta">
+        <h2 id="profile-name">-</h2>
+        <p id="profile-role">-</p>
+        <div class="meta-chips" id="profile-chips"></div>
+      </div>
+      <div style="margin-left:auto; display:flex; gap:8px;">
+        <button class="btn btn-outline" id="back-btn">&larr; Back to list</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="tab-personal">Personal Info</button>
+    <button class="tab-btn" data-tab="tab-documents">Documents</button>
+    <button class="tab-btn" data-tab="tab-attendance">Attendance History</button>
+    <button class="tab-btn" data-tab="tab-monthly">Monthly Attendance</button>
+    <button class="tab-btn" data-tab="tab-salary">Salary History</button>
+    <button class="tab-btn" data-tab="tab-leaves">Leave History</button>
+    <button class="tab-btn" data-tab="tab-shift">Shift Details</button>
+    <button class="tab-btn" data-tab="tab-performance">Performance Notes</button>
+  </div>
+
+  <div class="tab-panel active" id="tab-personal">
+    <div class="card">
+      <div class="info-grid" id="personal-info-grid"></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-documents">
+    <div class="card">
+      <div class="doc-grid" id="doc-grid"></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-attendance">
+    <div class="card">
+      <div class="card-head"><h3>Attendance History</h3></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Date</th><th>Status</th><th>Check In</th><th>Check Out</th><th>Working Hrs</th><th>OT Hrs</th><th>Late Min</th><th>Early Exit Min</th><th>Remarks</th></tr></thead>
+          <tbody id="attendance-history-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-monthly">
+    <div class="card">
+      <div class="card-head">
+        <h3>Monthly Attendance Report</h3>
+        <input type="month" id="monthly-picker" class="filter-select" />
+      </div>
+      <div class="stats-grid" id="monthly-stats-grid" style="grid-template-columns: repeat(4,1fr);"></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-salary">
+    <div class="card">
+      <div class="card-head"><h3>Salary History</h3></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Month</th><th>Present</th><th>Absent</th><th>OT Hrs</th><th>Gross</th><th>Deductions</th><th>Net Salary</th></tr></thead>
+          <tbody id="salary-history-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-leaves">
+    <div class="card">
+      <div class="card-head"><h3>Leave History</h3></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Type</th><th>From</th><th>To</th><th>Reason</th><th>Status</th></tr></thead>
+          <tbody id="leave-history-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-shift">
+    <div class="card">
+      <div class="info-grid" id="shift-info-grid"></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-performance">
+    <div class="card">
+      <div class="card-head"><h3>Performance Notes</h3></div>
+      <textarea class="form-control" id="performance-notes" rows="6" placeholder="Add performance notes, remarks, or feedback for this employee..."></textarea>
+      <button class="btn btn-primary mt-8" id="save-notes-btn">Save Notes</button>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="../js/employee-profile.js"></script>
+</body>
+</html>

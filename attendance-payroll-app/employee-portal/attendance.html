@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Attendance | Employee Portal</title>
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../css/responsive.css" />
+</head>
+<body>
+
+<div id="app-content" style="display:none;">
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="tab-today">Today</button>
+    <button class="tab-btn" data-tab="tab-history">History</button>
+    <button class="tab-btn" data-tab="tab-monthly">Monthly Report</button>
+  </div>
+
+  <div class="tab-panel active" id="tab-today">
+    <div class="card">
+      <div class="card-head"><h3 id="today-date-heading">Today</h3></div>
+      <div class="info-grid" id="today-info-grid"></div>
+      <a class="btn btn-primary mt-8" href="dashboard.html">Go to Dashboard to Punch In / Out</a>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-history">
+    <div class="card">
+      <div class="card-head"><h3>My Attendance History</h3></div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead><tr><th>Date</th><th>Punch In</th><th>Punch Out</th><th>Hours</th><th>Location</th><th>Status</th></tr></thead>
+          <tbody id="history-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-monthly">
+    <div class="card">
+      <div class="card-head">
+        <h3 id="monthly-heading">Monthly Report</h3>
+        <input type="month" class="filter-select" id="monthly-picker" />
+      </div>
+      <div class="stats-grid" id="monthly-stats-grid" style="grid-template-columns: repeat(4,1fr);"></div>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="js/employee-attendance.js"></script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Monthly Salary Sheet | Liqvigreen</title>
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../css/responsive.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  #salary-sheet-table input {
+    width: 68px; padding: 5px 6px; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text); font-size: 12.5px; text-align: right;
+  }
+  #salary-sheet-table td, #salary-sheet-table th { white-space: nowrap; }
+  .computed-cell { font-weight: 600; }
+  .negative-cell { color: var(--danger); font-weight: 700; }
+  .group-head-1 { background: var(--primary-light); color: var(--primary); }
+  .group-head-2 { background: var(--surface-alt); }
+
+  /* Freeze S.No (col 1, fixed width) + Name (col 2) so both stay visible
+     while scrolling through this table's many payroll columns. */
+  #salary-sheet-table th:first-child, #salary-sheet-table td:first-child { width: 44px; min-width: 44px; }
+  #salary-sheet-table thead tr:first-child > *:nth-child(2) {
+    position: sticky; left: 44px; z-index: 3; background: var(--surface-alt);
+  }
+  #salary-sheet-table tbody tr > *:nth-child(2) {
+    position: sticky; left: 44px; z-index: 2; background: var(--surface);
+    box-shadow: 2px 0 6px rgba(20, 40, 90, 0.08);
+  }
+  #salary-sheet-table tbody tr:hover > *:nth-child(2) { background: var(--primary-light); }
+
+  /* Card header (month picker + action buttons) must wrap on narrow screens
+     instead of overflowing the card. */
+  #salary-sheet-controls { flex-wrap: wrap; }
+  @media (max-width: 640px) {
+    #salary-sheet-table input { width: 54px; font-size: 11px; padding: 4px; }
+    #salary-sheet-table th, #salary-sheet-table td { padding: 8px 8px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app-content" style="display:none;">
+
+  <div class="card mb-16">
+    <div class="card-head">
+      <h3>Monthly Salary Sheet</h3>
+      <div id="salary-sheet-controls" style="display:flex; gap:10px; align-items:center;">
+        <input type="month" class="filter-select" id="month-picker" />
+        <button class="btn btn-primary" id="generate-btn">Generate</button>
+        <button class="btn btn-outline" id="save-sheet-btn">Save Sheet</button>
+        <button class="btn btn-outline" id="export-excel-btn">Export Excel</button>
+      </div>
+    </div>
+    <p class="form-hint">
+      Every editable (white background) cell can be adjusted inline — Used Leave, Leave This Month, Sunday Working, PF, ESI, TDS, and Advance Deduction.
+      Everything else recalculates automatically. Click <strong>Save Sheet</strong> to lock in this month's numbers, roll leave/advance balances forward, and update each employee's Salary History.
+    </p>
+  </div>
+
+  <div class="card">
+    <div class="table-wrap">
+      <table class="data-table" id="salary-sheet-table">
+        <thead>
+          <tr>
+            <th rowspan="2">S.No</th>
+            <th rowspan="2">Name</th>
+            <th colspan="3" class="group-head-1">Paid Leave</th>
+            <th colspan="3" class="group-head-2">Leave Settlement</th>
+            <th rowspan="2">Working Day</th>
+            <th rowspan="2">Leave Deduction</th>
+            <th rowspan="2">Salary Rate</th>
+            <th rowspan="2">Salary</th>
+            <th rowspan="2">Basic</th>
+            <th rowspan="2">HRA</th>
+            <th rowspan="2">Other Allowance</th>
+            <th rowspan="2">PF</th>
+            <th rowspan="2">ESI</th>
+            <th rowspan="2">TDS</th>
+            <th colspan="3" class="group-head-1">Advance Settlement</th>
+            <th rowspan="2">Net Pay</th>
+          </tr>
+          <tr>
+            <th class="group-head-1">Total Leave</th>
+            <th class="group-head-1">Used Leave</th>
+            <th class="group-head-1">Balance Leave</th>
+            <th class="group-head-2">Leave This Month</th>
+            <th class="group-head-2">Sunday Working</th>
+            <th class="group-head-2">Remain Leave</th>
+            <th class="group-head-1">Previous Adv</th>
+            <th class="group-head-1">Adv Deduction</th>
+            <th class="group-head-1">Balance Adv</th>
+          </tr>
+        </thead>
+        <tbody id="sheet-tbody">
+          <tr><td colspan="22" style="text-align:center;padding:30px;" class="text-muted">Pick a month and click "Generate" to build the salary sheet.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="../js/salary-sheet.js"></script>
+</body>
+</html>

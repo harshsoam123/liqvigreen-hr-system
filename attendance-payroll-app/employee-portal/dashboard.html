@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard | Employee Portal</title>
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../css/responsive.css" />
+<link rel="stylesheet" href="../css/auth-brand.css" />
+<style>
+  .punch-card {
+    background: linear-gradient(135deg, var(--brand-panel-bg-2, #0d3830), var(--brand-panel-bg-1, #0b2a24));
+    color: #fff; border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
+  }
+  .punch-card h3 { margin: 0 0 4px; font-size: 17px; }
+  .punch-card .punch-date { color: #b7ddd2; font-size: 13px; margin-bottom: 18px; }
+  .punch-times { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+  .punch-time-box { background: rgba(255,255,255,0.08); border-radius: 10px; padding: 14px; }
+  .punch-time-box .label { font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: #9fc9bd; margin-bottom: 6px; }
+  .punch-time-box .value { font-size: 20px; font-weight: 700; }
+  .punch-status-msg { font-size: 12.5px; padding: 10px 12px; border-radius: 8px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .punch-status-success { background: rgba(20,184,138,0.18); color: #7fe3c4; }
+  .punch-status-warning { background: rgba(217,119,6,0.18); color: #ffcb80; }
+  .greeting-date { color: var(--text-muted); font-size: 14px; margin: 2px 0 20px; }
+  .quick-actions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .quick-action-btn {
+    display: flex; align-items: center; gap: 10px; padding: 16px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border); background: var(--surface-alt); font-weight: 600; font-size: 13.5px; color: var(--text);
+  }
+  .quick-action-btn:hover { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+  @media (max-width: 640px) { .quick-actions-grid { grid-template-columns: 1fr 1fr; } .punch-times { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div id="app-content" style="display:none;">
+
+  <h2 id="greeting-text" style="margin:0;">Good day!</h2>
+  <p class="greeting-date" id="greeting-date"></p>
+
+  <div class="punch-card">
+    <h3>Today's Attendance</h3>
+    <p class="punch-date" id="punch-date"></p>
+    <div class="punch-times">
+      <div class="punch-time-box">
+        <div class="label">Punch In</div>
+        <div class="value" id="punch-in-value">—</div>
+      </div>
+      <div class="punch-time-box">
+        <div class="label">Punch Out</div>
+        <div class="value" id="punch-out-value">—</div>
+      </div>
+    </div>
+    <div id="punch-status-msg" style="display:none;" class="punch-status-msg"></div>
+    <button class="btn-brand" id="punch-action-btn" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); box-shadow: 0 6px 16px rgba(20,184,138,0.3);">Punch In</button>
+  </div>
+
+  <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 22px;" id="emp-stats-grid"></div>
+
+  <div class="card">
+    <div class="card-head"><h3>Quick Actions</h3></div>
+    <div class="quick-actions-grid">
+      <a class="quick-action-btn" href="attendance.html">📅 Attendance History</a>
+      <a class="quick-action-btn" href="leaves.html">📝 Apply Leave</a>
+      <a class="quick-action-btn" href="attendance.html#monthly">📊 Monthly Report</a>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="js/employee-dashboard.js"></script>
+</body>
+</html>

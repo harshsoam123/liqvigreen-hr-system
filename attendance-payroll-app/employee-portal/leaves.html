@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Leaves | Employee Portal</title>
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../css/responsive.css" />
+</head>
+<body>
+
+<div id="app-content" style="display:none;">
+
+  <div class="card-head mb-16">
+    <div>
+      <h2 style="margin:0;">Leave Management</h2>
+      <p class="text-muted" style="margin:4px 0 0;">Apply and track your leaves</p>
+    </div>
+    <button class="btn btn-primary" id="apply-leave-btn">+ Apply Leave</button>
+  </div>
+
+  <div class="stats-grid" id="leave-balance-grid" style="grid-template-columns: repeat(4,1fr); margin-bottom:22px;"></div>
+
+  <div class="card">
+    <div class="card-head"><h3>My Leave History</h3></div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Reason</th><th>Status</th><th>Applied</th></tr></thead>
+        <tbody id="leave-history-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- Apply Leave Modal -->
+<div class="modal-overlay" id="apply-leave-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Apply for Leave</h3>
+      <button class="modal-close" id="close-apply-modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="apply-leave-form">
+        <div class="form-group">
+          <label>Leave Type *</label>
+          <select class="form-control" id="apply-leave-type" required>
+            <option value="Casual Leave">Casual Leave (CL)</option>
+            <option value="Sick Leave">Sick Leave (SL)</option>
+            <option value="Paid Leave">Earned Leave (EL)</option>
+            <option value="Comp-Off">Comp-Off</option>
+            <option value="Unpaid Leave">Unpaid Leave</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>From Date *</label><input class="form-control" type="date" id="apply-leave-from" required /></div>
+          <div class="form-group"><label>To Date *</label><input class="form-control" type="date" id="apply-leave-to" required /></div>
+        </div>
+        <div class="form-group">
+          <label>Reason</label>
+          <textarea class="form-control" id="apply-leave-reason" rows="3" placeholder="Briefly describe the reason for leave..."></textarea>
+        </div>
+      </form>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" id="cancel-apply-modal">Cancel</button>
+      <button class="btn btn-primary" id="submit-leave-btn">Submit Request</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/employee-leaves.js"></script>
+</body>
+</html>

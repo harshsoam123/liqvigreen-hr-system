@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Salary Settings | Liqvigreen</title>
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../css/responsive.css" />
+</head>
+<body>
+
+<div id="app-content" style="display:none;">
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="tab-default">Default Rules</button>
+    <button class="tab-btn" data-tab="tab-override">Per-Employee Overrides</button>
+  </div>
+
+  <div class="tab-panel active" id="tab-default">
+    <div class="card mb-16">
+      <div class="card-head"><h3>Payroll Structure Defaults (used by the Monthly Salary Sheet)</h3></div>
+      <form id="structure-settings-form">
+        <div class="form-grid">
+          <div class="form-group"><label>Paid Leaves per Month (default)</label><input class="form-control" type="number" step="0.5" id="struct-paidLeavesPerMonth" value="3" /></div>
+          <div class="form-group"><label>Basic Salary %</label><input class="form-control" type="number" step="0.1" id="struct-basicPercent" value="50" /></div>
+          <div class="form-group"><label>HRA %</label><input class="form-control" type="number" step="0.1" id="struct-hraPercent" value="25" /></div>
+          <div class="form-group"><label>Other Allowance %</label><input class="form-control" type="number" step="0.1" id="struct-allowancePercent" value="25" /></div>
+        </div>
+        <p class="form-hint">Basic + HRA + Other Allowance should add up to 100% of the leave-adjusted salary. These defaults apply to every employee unless overridden on their profile.</p>
+        <button type="button" class="btn btn-primary mt-8" id="save-structure-btn">Save Payroll Structure</button>
+      </form>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Default Salary Rules (applied to all employees unless overridden)</h3></div>
+      <form id="default-settings-form">
+        <div class="form-grid">
+          <div class="form-group"><label>Overtime Rate (₹ / hour)</label><input class="form-control" type="number" step="0.01" id="def-overtimeRate" /></div>
+          <div class="form-group"><label>Late Deduction (₹ per late mark)</label><input class="form-control" type="number" step="0.01" id="def-lateDeduction" /></div>
+          <div class="form-group"><label>Half Day Deduction (₹)</label><input class="form-control" type="number" step="0.01" id="def-halfDayDeduction" /></div>
+          <div class="form-group"><label>Partial Exit Deduction (₹)</label><input class="form-control" type="number" step="0.01" id="def-partialExitDeduction" /></div>
+          <div class="form-group"><label>Leave Deduction (₹ per unpaid leave day)</label><input class="form-control" type="number" step="0.01" id="def-leaveDeduction" /></div>
+          <div class="form-group"><label>Bonus (₹)</label><input class="form-control" type="number" step="0.01" id="def-bonus" /></div>
+          <div class="form-group"><label>Incentive (₹)</label><input class="form-control" type="number" step="0.01" id="def-incentive" /></div>
+          <div class="form-group"><label>Allowances (₹)</label><input class="form-control" type="number" step="0.01" id="def-allowances" /></div>
+          <div class="form-group"><label>PF (₹)</label><input class="form-control" type="number" step="0.01" id="def-pf" /></div>
+          <div class="form-group"><label>ESI (₹)</label><input class="form-control" type="number" step="0.01" id="def-esi" /></div>
+          <div class="form-group"><label>Tax (₹)</label><input class="form-control" type="number" step="0.01" id="def-tax" /></div>
+          <div class="form-group"><label>Other Deductions (₹)</label><input class="form-control" type="number" step="0.01" id="def-otherDeductions" /></div>
+        </div>
+        <button type="button" class="btn btn-primary mt-8" id="save-default-btn">Save Default Rules</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-override">
+    <div class="card">
+      <div class="card-head">
+        <h3>Per-Employee Overrides</h3>
+        <select class="filter-select" id="override-emp-select"></select>
+      </div>
+      <form id="override-settings-form">
+        <div class="form-grid">
+          <div class="form-group"><label>Overtime Rate (₹ / hour)</label><input class="form-control" type="number" step="0.01" id="ov-overtimeRate" /></div>
+          <div class="form-group"><label>Late Deduction (₹)</label><input class="form-control" type="number" step="0.01" id="ov-lateDeduction" /></div>
+          <div class="form-group"><label>Half Day Deduction (₹)</label><input class="form-control" type="number" step="0.01" id="ov-halfDayDeduction" /></div>
+          <div class="form-group"><label>Partial Exit Deduction (₹)</label><input class="form-control" type="number" step="0.01" id="ov-partialExitDeduction" /></div>
+          <div class="form-group"><label>Leave Deduction (₹)</label><input class="form-control" type="number" step="0.01" id="ov-leaveDeduction" /></div>
+          <div class="form-group"><label>Bonus (₹)</label><input class="form-control" type="number" step="0.01" id="ov-bonus" /></div>
+          <div class="form-group"><label>Incentive (₹)</label><input class="form-control" type="number" step="0.01" id="ov-incentive" /></div>
+          <div class="form-group"><label>Allowances (₹)</label><input class="form-control" type="number" step="0.01" id="ov-allowances" /></div>
+          <div class="form-group"><label>PF (₹)</label><input class="form-control" type="number" step="0.01" id="ov-pf" /></div>
+          <div class="form-group"><label>ESI (₹)</label><input class="form-control" type="number" step="0.01" id="ov-esi" /></div>
+          <div class="form-group"><label>Tax (₹)</label><input class="form-control" type="number" step="0.01" id="ov-tax" /></div>
+          <div class="form-group"><label>Other Deductions (₹)</label><input class="form-control" type="number" step="0.01" id="ov-otherDeductions" /></div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button type="button" class="btn btn-primary mt-8" id="save-override-btn">Save Override</button>
+          <button type="button" class="btn btn-outline mt-8" id="clear-override-btn">Clear Override (use default)</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="../js/salary-settings.js"></script>
+</body>
+</html>

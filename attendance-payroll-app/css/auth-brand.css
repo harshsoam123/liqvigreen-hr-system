@@ -1,0 +1,108 @@
+/* ============================================================
+   BRANDED AUTH PAGES — Zero Footprint Industries Ltd.
+   Split-screen login/forgot-password layout.
+============================================================ */
+
+:root {
+  --brand-accent: #14b88a;
+  --brand-accent-dark: #0f9670;
+  --brand-panel-bg-1: #0b2a24;
+  --brand-panel-bg-2: #0d3830;
+}
+
+.split-auth-page {
+  min-height: 100vh;
+  display: flex;
+  background: var(--surface);
+}
+
+.split-auth-brand {
+  flex: 1 1 46%;
+  max-width: 560px;
+  background: radial-gradient(circle at 30% 20%, var(--brand-panel-bg-2), var(--brand-panel-bg-1) 70%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 48px 40px;
+  text-align: center;
+}
+
+.split-auth-logo-box {
+  width: 300px; max-width: 80%; height: auto;
+  background: #f4f9f7;
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 22px 26px;
+  margin-bottom: 32px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+.split-auth-logo-box img { width: 100%; height: auto; object-fit: contain; }
+
+.split-auth-brand h1 {
+  font-size: 32px; font-weight: 800; margin: 0 0 10px;
+  letter-spacing: -0.01em;
+}
+.split-auth-brand .brand-company {
+  font-size: 16px; color: #b7ddd2; margin: 0 0 36px;
+}
+.split-auth-brand .brand-tagline {
+  font-size: 13px; color: var(--brand-accent); font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase; margin: -28px 0 36px;
+}
+
+.brand-feature-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 14px 28px; text-align: left;
+}
+.brand-feature-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 14px; color: #dcefe9;
+}
+.brand-feature-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--brand-accent); flex-shrink: 0;
+}
+
+.split-auth-form-side {
+  flex: 1 1 54%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 40px 24px;
+}
+.split-auth-form-wrap { width: 100%; max-width: 400px; }
+.split-auth-form-wrap h2 { font-size: 26px; font-weight: 800; margin: 0 0 6px; color: var(--text); }
+.split-auth-form-wrap .form-subtitle { color: var(--text-muted); font-size: 14px; margin: 0 0 28px; }
+
+.split-auth-form-wrap .form-control:focus {
+  border-color: var(--brand-accent);
+  box-shadow: 0 0 0 3px rgba(20, 184, 138, 0.15);
+}
+.split-auth-form-wrap .link-primary { color: var(--brand-accent); }
+
+.btn-brand {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 13px 20px; border-radius: 10px; border: none;
+  font-size: 15px; font-weight: 700; color: #fff; cursor: pointer;
+  background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent-dark));
+  transition: transform .15s ease, box-shadow .15s ease;
+  box-shadow: 0 6px 16px rgba(20, 184, 138, 0.28);
+}
+.btn-brand:hover { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(20, 184, 138, 0.35); }
+
+.split-auth-footer {
+  margin-top: 28px; text-align: center; font-size: 12px; color: var(--text-muted);
+}
+
+@media (max-width: 900px) {
+  .split-auth-page { flex-direction: column; }
+  .split-auth-brand { max-width: 100%; padding: 36px 24px; }
+  .brand-feature-grid { grid-template-columns: 1fr 1fr; }
+  .split-auth-logo-box { width: 220px; margin-bottom: 22px; }
+  .split-auth-brand h1 { font-size: 24px; }
+}
+
+@media (max-width: 480px) {
+  .brand-feature-grid { grid-template-columns: 1fr; }
+  .split-auth-form-side { padding: 32px 18px; }
+}

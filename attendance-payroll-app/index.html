@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Login | Liqvigreen</title>
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/responsive.css" />
+<link rel="stylesheet" href="css/auth-brand.css" />
+</head>
+<body>
+
+<div class="split-auth-page">
+
+  <!-- Left brand panel -->
+  <div class="split-auth-brand">
+    <div class="split-auth-logo-box">
+      <img src="assets/branding/logo.jpeg" alt="Liqvigreen" />
+    </div>
+    <h1>HR Management</h1>
+    <p class="brand-company">Liqvigreen</p>
+    <p class="brand-tagline">Fueling Sustainability</p>
+
+    <div class="brand-feature-grid">
+      <div class="brand-feature-item"><span class="brand-feature-dot"></span> Employee Management</div>
+      <div class="brand-feature-item"><span class="brand-feature-dot"></span> Attendance Tracking</div>
+      <div class="brand-feature-item"><span class="brand-feature-dot"></span> Payroll Processing</div>
+      <div class="brand-feature-item"><span class="brand-feature-dot"></span> Performance Reviews</div>
+    </div>
+  </div>
+
+  <!-- Right form panel -->
+  <div class="split-auth-form-side">
+    <div class="split-auth-form-wrap">
+      <h2>Welcome back</h2>
+      <p class="form-subtitle">Sign in to your HR account</p>
+
+      <div id="demo-banner" style="display:none; background: var(--info-bg); color: var(--info); font-size: 12.5px; padding: 10px 12px; border-radius: 8px; margin-bottom: 18px;">
+        Demo mode: Firebase isn't connected yet, so any email &amp; password will log you in with sample local data.
+      </div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-email">Email Address</label>
+          <div class="input-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M22 6l-10 7L2 6" stroke="currentColor" stroke-width="1.8" fill="none"/></svg>
+            <input class="form-control" type="email" id="login-email" placeholder="you@company.com" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <div class="input-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="1.8"/></svg>
+            <input class="form-control" type="password" id="login-password" placeholder="••••••••" required />
+            <button type="button" class="password-toggle" id="toggle-password">Show</button>
+          </div>
+        </div>
+        <div class="flex-between mb-16">
+          <label style="font-size:13px; display:flex; align-items:center; gap:6px;"><input type="checkbox" /> Remember me</label>
+          <a class="link-primary" href="forgot-password.html">Forgot password?</a>
+        </div>
+        <div class="error-text" id="login-error"></div>
+        <button class="btn-brand" type="submit">→ Sign In</button>
+      </form>
+
+      <p class="split-auth-footer">Liqvigreen © 2026</p>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="js/auth.js"></script>
+</body>
+</html>
