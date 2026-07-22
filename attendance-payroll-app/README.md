@@ -28,12 +28,14 @@ attendance-payroll-app/
 │   ├── dashboard.html         # Punch In/Out (with location + device), quick stats
 │   ├── attendance.html        # My attendance: Today / History / Monthly Report
 │   ├── leaves.html            # My leave balances, apply leave, history
+│   ├── quick-punch.html       # No-login attendance form (shared link, any employee)
 │   └── js/
 │       ├── employee-auth.js
 │       ├── employee-shell.js
 │       ├── employee-dashboard.js
 │       ├── employee-attendance.js
-│       └── employee-leaves.js
+│       ├── employee-leaves.js
+│       └── quick-punch.js
 ├── css/
 │   ├── style.css              # Core design system (theme, layout, components)
 │   ├── responsive.css         # Mobile breakpoints
@@ -75,7 +77,7 @@ This is a **static, buildless project** — no npm install, no bundler required.
 
 ### Firestore Security Rules
 
-If you're **only** ever going to use the Admin app (no Employee Portal), the simple version works fine:
+If you're **only** ever going to use the Admin app (no Employee Portal, no Quick Punch), the simple version works fine:
 
 ```js
 rules_version = '2';
@@ -88,7 +90,7 @@ service cloud.firestore {
 }
 ```
 
-**If you're using the Employee Portal** (see Section 9 below), use this expanded version instead — it keeps admins with full access, while restricting any logged-in employee to reading/writing only their own attendance and leave records, and only reading their own employee profile:
+**If you're using the Employee Portal and/or Quick Punch** (see Sections 8 and 11 below), use this expanded version instead. It defines three kinds of signed-in users — **admin**, **portal employee**, and **anonymous** (used only by the no-login Quick Punch page) — and scopes each to exactly what they should be able to touch:
 
 ```js
 rules_version = '2';
@@ -97,57 +99,90 @@ service cloud.firestore {
 
     // Maps the logged-in user's email to their employee ID via the
     // `portalLinks` collection (written automatically when an admin sets
-    // up an employee's Portal Access). Admins never have a portalLinks
-    // entry for their own login email, so isPortalEmployee() is false
-    // for them and they keep full access to everything.
+    // up an employee's Portal Access).
+    function myEmail() {
+      return request.auth.token.email;
+    }
     function myEmpId() {
-      return exists(/databases/$(database)/documents/portalLinks/$(request.auth.token.email))
-        ? get(/databases/$(database)/documents/portalLinks/$(request.auth.token.email)).data.empId
+      return myEmail() != null && exists(/databases/$(database)/documents/portalLinks/$(myEmail()))
+        ? get(/databases/$(database)/documents/portalLinks/$(myEmail())).data.empId
         : null;
     }
     function isPortalEmployee() {
       return myEmpId() != null;
     }
+    // Quick Punch signs in anonymously just to satisfy "request.auth !=
+    // null" — it must NEVER be treated as admin-equivalent.
+    function isAnon() {
+      return request.auth != null && request.auth.token.firebase.sign_in_provider == 'anonymous';
+    }
+    function isAdmin() {
+      return request.auth != null && !isAnon() && !isPortalEmployee();
+    }
 
     match /employees/{empId} {
       allow read: if request.auth != null
-                   && (!isPortalEmployee() || resource.data.portalEmail == request.auth.token.email);
-      allow write: if request.auth != null && !isPortalEmployee();
+                   && (isAdmin() || (isPortalEmployee() && resource.data.portalEmail == myEmail()));
+      allow write: if request.auth != null && isAdmin();
+    }
+
+    // Minimal public directory (name + code + shift only — no salary,
+    // bank, Aadhaar, documents, etc.) kept in sync automatically whenever
+    // an admin adds/edits/deletes an employee. This is what the no-login
+    // Quick Punch page reads from, so it never touches sensitive data.
+    match /employeeDirectory/{empId} {
+      allow read: if request.auth != null; // includes anonymous Quick Punch sessions
+      allow write: if request.auth != null && isAdmin();
+    }
+
+    match /shifts/{shiftId} {
+      allow read: if request.auth != null; // Quick Punch needs this for late/OT calculation
+      allow write: if request.auth != null && isAdmin();
     }
 
     match /attendance/{attId} {
       allow read: if request.auth != null
-                   && (!isPortalEmployee() || resource.data.empId == myEmpId());
+                   && (isAdmin() || (isPortalEmployee() && resource.data.empId == myEmpId()) || isAnon());
       allow create: if request.auth != null
-                   && (!isPortalEmployee() || request.resource.data.empId == myEmpId());
+                   && (isAdmin()
+                       || (isPortalEmployee() && request.resource.data.empId == myEmpId())
+                       || (isAnon() && exists(/databases/$(database)/documents/employeeDirectory/$(request.resource.data.empId))));
       allow update: if request.auth != null
-                   && (!isPortalEmployee() || (resource.data.empId == myEmpId() && request.resource.data.empId == myEmpId()));
-      allow delete: if request.auth != null && !isPortalEmployee();
+                   && (isAdmin()
+                       || (isPortalEmployee() && resource.data.empId == myEmpId() && request.resource.data.empId == myEmpId())
+                       || (isAnon() && resource.data.empId == request.resource.data.empId
+                           && exists(/databases/$(database)/documents/employeeDirectory/$(request.resource.data.empId))));
+      allow delete: if request.auth != null && isAdmin();
     }
 
     match /leaves/{leaveId} {
       allow read: if request.auth != null
-                   && (!isPortalEmployee() || resource.data.empId == myEmpId());
+                   && (isAdmin() || (isPortalEmployee() && resource.data.empId == myEmpId()));
       allow create: if request.auth != null
-                   && (!isPortalEmployee() || request.resource.data.empId == myEmpId());
-      allow update, delete: if request.auth != null && !isPortalEmployee();
+                   && (isAdmin() || (isPortalEmployee() && request.resource.data.empId == myEmpId()));
+      allow update, delete: if request.auth != null && isAdmin();
     }
 
     match /portalLinks/{email} {
-      allow read: if request.auth != null && request.auth.token.email == email;
-      allow write: if request.auth != null && !isPortalEmployee();
+      allow read: if request.auth != null && myEmail() == email;
+      allow write: if request.auth != null && isAdmin();
     }
 
-    // Everything else (shifts, salarySettings, salaryRecords,
-    // notifications, etc.) stays admin-only, exactly as before.
+    // Everything else (salarySettings, salaryRecords, notifications,
+    // etc.) stays strictly admin-only.
     match /{document=**} {
-      allow read, write: if request.auth != null && !isPortalEmployee();
+      allow read, write: if request.auth != null && isAdmin();
     }
   }
 }
 ```
 
-> **Honest limitation:** this restricts what the app's own UI lets an employee do, and enforces it at the database level too (a real security boundary, not just hidden buttons) — Firestore will reject any read/write from a portal employee's account for data that isn't theirs, even if someone tried calling the Firestore API directly. What it does **not** do is protect against a compromised admin account, or replace enterprise-grade role management (custom claims via Cloud Functions) if you later need more than two roles (Admin / Employee).
+**You'll also need to enable Anonymous sign-in** if you're using Quick Punch: Firebase Console → **Authentication → Sign-in method → Anonymous → Enable**. Without this, Quick Punch will show a "Could not connect" error in live (non-demo) mode.
+
+> **Honest limitations:**
+> - This enforces access at the database level (Firestore will reject the request even if someone calls the API directly), not just by hiding buttons in the UI.
+> - Quick Punch's anonymous sessions can read/write any attendance record for any employee (needed so any employee can use the same shared link/kiosk), but they can **never** see salary, bank details, Aadhaar, or any other sensitive field — those stay in the separate `employees` collection, which anonymous sessions can't touch at all.
+> - This doesn't protect against a compromised admin account, and it isn't a substitute for enterprise-grade role management (custom claims via Cloud Functions) if you later need more than these three access levels.
 
 ### Storage Rules
 
@@ -161,7 +196,7 @@ service firebase.storage {
   }
 }
 ```
-This keeps Storage admin-oriented (document uploads happen from the Employees page). The Employee Portal doesn't upload or read anything from Storage in this version, so it's not further restricted here.
+This keeps Storage admin-oriented (document uploads happen from the Employees page). Neither the Employee Portal nor Quick Punch upload or read anything from Storage in this version, so it's not further restricted here.
 
 ### Recommended Firestore Indexes
 Firestore will prompt you with a direct link to auto-create composite indexes the first time a query needs one (visible in the browser console as an error link). Just click it — no manual setup needed.
@@ -180,6 +215,7 @@ Firestore will prompt you with a direct link to auto-create composite indexes th
 | `salaryRecords`      | auto (`empId_YYYY-MM`)| month, empId, presentDays, absentDays, leaveDays, halfDays, lateCount, partialExitCount, overtimeHours, grossSalary, totalDeductions, netSalary, generatedOn (also carries the full Monthly Salary Sheet breakdown when generated from that page) |
 | `notifications`      | auto                  | type, message, read, createdAt |
 | `portalLinks`        | employee's portal email | empId, empCode — used by Firestore security rules to scope an Employee Portal login to their own data |
+| `employeeDirectory`  | auto (matches `employees` doc ID) | fullName, empCode, status, shiftId — a minimal, non-sensitive mirror of each employee, kept in sync automatically; this is what the no-login Quick Punch page reads from |
 
 ---
 
@@ -327,7 +363,24 @@ Net Pay          = Salary − PF − ESI − TDS − Advance Deduction
 
 ---
 
-## 11. Notes
+## 11. Quick Punch (no-login attendance, for a shared link/kiosk)
+
+At `/employee-portal/quick-punch.html` — a single page, no account or login needed, that anyone with the link can open to mark attendance:
+
+1. Select your name from the dropdown (only active employees appear).
+2. Tap **Punch In** or **Punch Out**.
+3. Location is captured automatically (you'll be prompted to allow it); a per-device ID is shown too.
+4. Tap **Submit Attendance** — done. The form resets so the next person can use the same link/device.
+
+**When to use this vs. the full Employee Portal:** if employees don't want (or can't be bothered) to remember a login, share this one link instead — put it on a shared tablet/kiosk at the entrance, or send it as a bookmark. It writes to the exact same `attendance` data as the full Employee Portal and the Admin app, so everything (Dashboard, Reports, Monthly Salary Sheet, payroll calculation) picks it up automatically — nothing else needed to change.
+
+**Setup:** in live (non-demo) Firebase mode, enable **Anonymous** sign-in (Firebase Console → Authentication → Sign-in method → Anonymous → Enable) and use the expanded Firestore rules from Section 2 — Quick Punch uses an anonymous session just to satisfy Firestore's "must be signed in" requirement, and the rules make sure that session can only ever touch attendance records and the minimal employee directory (never salary, bank details, documents, or anything else).
+
+**What it can't do (by design):** edit past attendance, see other employees' salary or personal details, or apply for leave — those still require the full Employee Portal login. It also can't mark someone Absent/On Leave/Half Day — that's still an admin action from the Attendance page.
+
+---
+
+## 12. Notes
 
 - The app is fully **admin-only** (single role) as specified. Extend `employees` role field if you need multi-role logins later.
 - Dark mode preference is stored in `localStorage` and toggled from the top navbar on every page.

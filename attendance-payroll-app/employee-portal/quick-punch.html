@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quick Punch | Liqvigreen</title>
+<link rel="stylesheet" href="../css/style.css" />
+<link rel="stylesheet" href="../css/responsive.css" />
+<link rel="stylesheet" href="../css/auth-brand.css" />
+<style>
+  body { background: var(--bg); }
+  .qp-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
+  .qp-card {
+    width: 100%; max-width: 440px; background: var(--surface); border-radius: 18px;
+    box-shadow: var(--shadow-md); border: 1px solid var(--border); overflow: hidden;
+  }
+  .qp-head {
+    background: linear-gradient(135deg, var(--brand-panel-bg-2, #0d3830), var(--brand-panel-bg-1, #0b2a24));
+    color: #fff; padding: 20px 24px; display: flex; align-items: center; gap: 14px;
+  }
+  .qp-head img { height: 30px; width: auto; background: #fff; border-radius: 6px; padding: 4px 6px; }
+  .qp-head .qp-title { font-weight: 700; font-size: 15px; }
+  .qp-head .qp-time { margin-left: auto; text-align: right; font-size: 12px; color: #b7ddd2; }
+  .qp-head .qp-time strong { display: block; font-size: 15px; color: #fff; }
+  .qp-body { padding: 24px; }
+  .qp-steps { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+  .qp-step { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; position: relative; }
+  .qp-step .dot {
+    width: 28px; height: 28px; border-radius: 50%; background: var(--muted-bg); color: var(--text-muted);
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; border: 2px solid var(--border);
+  }
+  .qp-step.done .dot { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .qp-step .lbl { font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); }
+  .qp-step-line { position: absolute; top: 14px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: -1; }
+  .qp-step.done .qp-step-line { background: var(--primary); }
+
+  .qp-type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 4px; }
+  .qp-type-btn {
+    padding: 14px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface-alt);
+    font-weight: 700; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--text);
+  }
+  .qp-type-btn .dot-icon { width: 8px; height: 8px; border-radius: 50%; }
+  .qp-type-btn[data-type="in"] .dot-icon { background: var(--success); }
+  .qp-type-btn[data-type="out"] .dot-icon { background: var(--danger); }
+  .qp-type-btn.active[data-type="in"] { border-color: var(--success); background: var(--success-bg); color: var(--success); }
+  .qp-type-btn.active[data-type="out"] { border-color: var(--danger); background: var(--danger-bg); color: var(--danger); }
+
+  .qp-location-box {
+    margin-top: 16px; padding: 14px; border-radius: 10px; border: 1.5px solid var(--success); background: var(--success-bg);
+    font-size: 13px; color: var(--success); font-weight: 600;
+  }
+  .qp-location-box.pending { border-color: var(--border); background: var(--surface-alt); color: var(--text-muted); }
+  .qp-location-box.error { border-color: var(--danger); background: var(--danger-bg); color: var(--danger); }
+  .qp-device-box {
+    margin-top: 12px; padding: 12px 14px; border-radius: 10px; background: var(--surface-alt); border: 1px solid var(--border);
+    font-size: 11.5px; color: var(--text-muted); display: flex; align-items: center; gap: 8px;
+  }
+  .qp-device-box .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); flex-shrink: 0; }
+  .qp-device-box code { font-size: 11px; word-break: break-all; }
+
+  .qp-footer { text-align: center; font-size: 11.5px; color: var(--text-muted); margin-top: 18px; }
+</style>
+</head>
+<body>
+
+<div class="qp-page">
+  <div class="qp-card">
+    <div class="qp-head">
+      <img src="../assets/branding/logo.jpeg" alt="Liqvigreen" />
+      <div>
+        <div class="qp-title">Liqvigreen Attendance</div>
+        <div style="font-size:11px; color:#7fe3c4;">● System Active</div>
+      </div>
+      <div class="qp-time">
+        <strong id="qp-clock">--:--</strong>
+        <span id="qp-date-small"></span>
+      </div>
+    </div>
+
+    <div class="qp-body">
+      <div class="qp-steps">
+        <div class="qp-step done" id="step-1"><div class="dot">1</div><div class="lbl">Name</div></div>
+        <div class="qp-step" id="step-2"><div class="qp-step-line"></div><div class="dot">2</div><div class="lbl">Type</div></div>
+        <div class="qp-step" id="step-3"><div class="qp-step-line"></div><div class="dot">3</div><div class="lbl">Location</div></div>
+        <div class="qp-step" id="step-4"><div class="qp-step-line"></div><div class="dot">4</div><div class="lbl">Submit</div></div>
+      </div>
+
+      <div id="qp-remembered-banner" style="display:none; margin-bottom: 12px; padding: 10px 12px; border-radius: 8px; background: var(--primary-light); color: var(--primary); font-size: 12.5px; display: none; align-items: center; justify-content: space-between; gap: 10px;">
+        <span>Punching in as <strong id="qp-remembered-name"></strong></span>
+        <button type="button" class="link-primary" id="qp-switch-btn" style="background:none; border:none; font-weight:700; font-size:12.5px; cursor:pointer;">Not you? Switch</button>
+      </div>
+
+      <div class="form-group" id="qp-name-field-wrap">
+        <label>Employee Name</label>
+        <select class="form-control" id="qp-employee-select">
+          <option value="">Select your name...</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Attendance Type</label>
+        <div class="qp-type-grid">
+          <button type="button" class="qp-type-btn" data-type="in"><span class="dot-icon"></span> Punch In</button>
+          <button type="button" class="qp-type-btn" data-type="out"><span class="dot-icon"></span> Punch Out</button>
+        </div>
+      </div>
+
+      <div>
+        <label style="font-size:13px; font-weight:600; color:var(--text-muted);">GPS Location</label>
+        <div class="qp-location-box pending" id="qp-location-box">Fetching your location...</div>
+      </div>
+
+      <div class="qp-device-box">
+        <span class="status-dot"></span>
+        <div>DEVICE ID<br /><code id="qp-device-id">—</code></div>
+      </div>
+
+      <button class="btn-brand mt-8" id="qp-submit-btn" style="width:100%; margin-top:18px;" disabled>✓ Submit Attendance</button>
+      <p class="error-text" id="qp-error" style="text-align:center;"></p>
+
+      <p class="qp-footer">Liqvigreen · Attendance Management System</p>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/quick-punch.js"></script>
+</body>
+</html>

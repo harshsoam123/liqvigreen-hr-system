@@ -25,10 +25,32 @@ async function init() {
     populateShiftSelects();
     populateDeptFilter();
     applyFilters();
+    backfillEmployeeDirectory();
   } finally {
     showLoader(false);
   }
   bindEvents();
+}
+
+// One-time sync: employees added before the employeeDirectory /
+// Quick Punch feature existed won't have a directory entry yet.
+// Fills those in quietly in the background so Quick Punch can find them.
+async function backfillEmployeeDirectory() {
+  try {
+    const directory = await dbGetAll("employeeDirectory");
+    const existingIds = new Set(directory.map((d) => d.id));
+    const missing = allEmployees.filter((e) => !existingIds.has(e.id));
+    for (const e of missing) {
+      await dbSet("employeeDirectory", e.id, {
+        fullName: e.fullName,
+        empCode: e.empCode,
+        status: e.status || "active",
+        shiftId: e.shiftId || "",
+      });
+    }
+  } catch (err) {
+    console.error("employeeDirectory backfill failed:", err);
+  }
 }
 
 function populateShiftSelects() {
@@ -298,13 +320,24 @@ async function saveEmployee() {
     }
     data.otherDocsUrl = otherUrls;
 
+    let savedEmpId = id;
     if (id) {
       await dbUpdate("employees", id, data);
       toast("Employee updated successfully.");
     } else {
-      const newId = await dbAdd("employees", data);
+      savedEmpId = await dbAdd("employees", data);
       toast("Employee added successfully.");
     }
+
+    // Mirror a MINIMAL, non-sensitive record (no salary/bank/Aadhaar/etc.)
+    // into employeeDirectory — this is what the no-login Quick Punch page
+    // reads from, so it never has access to sensitive employee data.
+    await dbSet("employeeDirectory", savedEmpId, {
+      fullName: data.fullName,
+      empCode: data.empCode,
+      status: data.status,
+      shiftId: data.shiftId,
+    });
 
     allEmployees = await dbGetAll("employees");
     applyFilters();
@@ -420,6 +453,7 @@ async function cascadeDeleteEmployee(empId) {
     ...leaves.map((l) => dbDelete("leaves", l.id)),
     ...salaryRecords.map((s) => dbDelete("salaryRecords", s.id)),
     dbDelete("salarySettings", empId).catch(() => {}), // ignore if no override exists
+    dbDelete("employeeDirectory", empId).catch(() => {}),
     employee?.portalEmail ? dbDelete("portalLinks", employee.portalEmail).catch(() => {}) : Promise.resolve(),
   ]);
 

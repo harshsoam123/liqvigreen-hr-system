@@ -89,6 +89,12 @@ export async function seedDemoDataIfNeeded() {
       advanceBalance: 0,
     });
     empIds.push(id);
+    await dbSet("employeeDirectory", id, {
+      fullName: emp.fullName,
+      empCode: emp.empCode,
+      status: "active",
+      shiftId: emp.shiftId,
+    });
   }
 
   // Sample attendance for today

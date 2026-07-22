@@ -12,12 +12,16 @@ renderEmployeeShell("dashboard", "Dashboard");
 let employee = null;
 let shift = null;
 let todayRecord = null;
+let cachedLocation = null;
+let cachedLocationError = null;
+let cachedLocationAt = 0;
 
 document.addEventListener("shell-ready", (e) => init(e.detail.employee));
 
 async function init(emp) {
   employee = emp;
   renderGreeting();
+  fetchLocationInBackground(); // don't block the page — runs while everything else loads
 
   showLoader(true);
   try {
@@ -34,6 +38,35 @@ async function init(emp) {
   }
 
   document.getElementById("punch-action-btn").addEventListener("click", handlePunchAction);
+}
+
+// Fetches location as soon as the dashboard opens (instead of waiting
+// until the Punch In/Out button is clicked) so there's no delay — and
+// no extra click — at the moment of actually punching. Cached for 2
+// minutes; refreshed automatically if it's gone stale by punch time.
+async function fetchLocationInBackground() {
+  const box = document.getElementById("punch-location-msg");
+  try {
+    cachedLocation = await getCurrentLocation();
+    cachedLocationError = null;
+    cachedLocationAt = Date.now();
+    if (box) {
+      box.style.background = "rgba(20,184,138,0.18)";
+      box.style.color = "#7fe3c4";
+      box.textContent = `📍 Location ready (${cachedLocation.lat.toFixed(4)}, ${cachedLocation.lng.toFixed(4)})`;
+    }
+  } catch (err) {
+    cachedLocation = null;
+    cachedLocationError = err.message || "Location access denied. Please enable location.";
+    cachedLocationAt = Date.now();
+    if (box) {
+      box.style.background = "rgba(217,119,6,0.18)";
+      box.style.color = "#ffcb80";
+      box.textContent = `📍 ${cachedLocationError} You can still punch — tap to retry.`;
+      box.style.cursor = "pointer";
+      box.onclick = fetchLocationInBackground;
+    }
+  }
 }
 
 function renderGreeting() {
@@ -75,16 +108,23 @@ function renderPunchCard() {
 async function handlePunchAction() {
   const isPunchingIn = !todayRecord || !todayRecord.checkIn;
   const btn = document.getElementById("punch-action-btn");
-  const msg = document.getElementById("punch-status-msg");
   btn.disabled = true;
   showLoader(true);
 
-  let location = null;
-  let locationError = null;
-  try {
-    location = await getCurrentLocation();
-  } catch (err) {
-    locationError = err.message || "Location access denied. Please enable location.";
+  // Use the location fetched in the background when the page opened —
+  // only re-fetch if we don't have one yet, or it's more than 2 minutes
+  // stale (e.g. the employee left the tab open a while before punching).
+  let location = cachedLocation;
+  let locationError = cachedLocationError;
+  const isStale = Date.now() - cachedLocationAt > 2 * 60 * 1000;
+  if (!location || isStale) {
+    try {
+      location = await getCurrentLocation();
+      locationError = null;
+    } catch (err) {
+      location = null;
+      locationError = err.message || "Location access denied. Please enable location.";
+    }
   }
 
   const device = getDeviceInfo();
