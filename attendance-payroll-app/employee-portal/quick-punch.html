@@ -8,7 +8,12 @@
 <link rel="stylesheet" href="../css/responsive.css" />
 <link rel="stylesheet" href="../css/auth-brand.css" />
 <style>
-  body { background: var(--bg); }
+  body { 
+    background: var(--bg);
+    background-image: url('../liqvigreen%20logo%20for%20background.png');
+    background-size: cover;
+    background-position: center;
+   }
   .qp-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
   .qp-card {
     width: 100%; max-width: 440px; background: var(--surface); border-radius: 18px;
@@ -44,6 +49,7 @@
   .qp-type-btn[data-type="out"] .dot-icon { background: var(--danger); }
   .qp-type-btn.active[data-type="in"] { border-color: var(--success); background: var(--success-bg); color: var(--success); }
   .qp-type-btn.active[data-type="out"] { border-color: var(--danger); background: var(--danger-bg); color: var(--danger); }
+  .qp-type-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
   .qp-location-box {
     margin-top: 16px; padding: 14px; border-radius: 10px; border: 1.5px solid var(--success); background: var(--success-bg);
@@ -96,6 +102,8 @@
           <option value="">Select your name...</option>
         </select>
       </div>
+
+      <div id="qp-today-status" style="display:none; margin-bottom: 14px; padding: 10px 12px; border-radius: 8px; font-size: 12.5px; font-weight: 600;"></div>
 
       <div class="form-group">
         <label>Attendance Type</label>

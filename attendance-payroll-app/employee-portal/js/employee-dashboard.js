@@ -133,6 +133,25 @@ async function handlePunchAction() {
   const date = todayStr();
 
   try {
+    // Re-fetch fresh right before writing — a safety net in case this
+    // employee already punched in/out from another device or via Quick
+    // Punch since this page was last loaded/refreshed.
+    const attendanceAll = await dbQuery("attendance", [["empId", "==", employee.id]]);
+    const freshRecord = attendanceAll.find((a) => a.date === date) || null;
+
+    if (isPunchingIn && freshRecord?.checkIn) {
+      toast(`You are already logged in today (punched in at ${freshRecord.checkIn}).`, "info");
+      todayRecord = freshRecord;
+      renderPunchCard();
+      return;
+    }
+    if (!isPunchingIn && freshRecord?.checkOut) {
+      toast(`You are already logged out for today (punched out at ${freshRecord.checkOut}).`, "info");
+      todayRecord = freshRecord;
+      renderPunchCard();
+      return;
+    }
+
     if (isPunchingIn) {
       const data = {
         empId: employee.id,
@@ -160,7 +179,7 @@ async function handlePunchAction() {
       await dbSet("attendance", `${employee.id}_${date}`, data);
       toast(locationError ? `Punched in at ${timeStr} (${locationError})` : `Punched in at ${timeStr}`, locationError ? "info" : "success");
     } else {
-      const checkIn = todayRecord.checkIn;
+      const checkIn = freshRecord.checkIn;
       const metrics = computeAttendanceMetrics(shift, checkIn, timeStr);
       let status = "present";
       if (shift) {
@@ -189,10 +208,10 @@ async function handlePunchAction() {
       toast(locationError ? `Punched out at ${timeStr} (${locationError})` : `Punched out at ${timeStr}. Working hours: ${metrics.workingHours}h`, locationError ? "info" : "success");
     }
 
-    const attendanceAll = await dbQuery("attendance", [["empId", "==", employee.id]]);
-    todayRecord = attendanceAll.find((a) => a.date === date) || null;
+    const updatedAttendanceAll = await dbQuery("attendance", [["empId", "==", employee.id]]);
+    todayRecord = updatedAttendanceAll.find((a) => a.date === date) || null;
     renderPunchCard();
-    renderStats(attendanceAll);
+    renderStats(updatedAttendanceAll);
   } catch (err) {
     console.error(err);
     toast("Failed to record punch. Please try again.", "error");
