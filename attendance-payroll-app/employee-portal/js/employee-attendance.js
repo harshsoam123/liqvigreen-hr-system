@@ -101,6 +101,6 @@ function renderMonthly(monthKey) {
     ["Overtime Hours", s.overtimeHours.toFixed(1)],
   ];
   document.getElementById("monthly-stats-grid").innerHTML = cards
-    .map(([label, value]) => `<div class="stat-card stat-blue"><div class="stat-value" style="font-size:18px;">${value}</div><div class="stat-label">${label}</div></div>`)
+    .map(([label, value]) => `<div class="stat-card stat-blue"><div class="stat-value" style="font-size: 1.125rem;">${value}</div><div class="stat-label">${label}</div></div>`)
     .join("");
 }

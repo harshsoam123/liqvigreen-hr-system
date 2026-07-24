@@ -37,8 +37,8 @@ function renderBalances() {
       (b, i) => `
     <div class="stat-card ${colorClasses[i % colorClasses.length]}">
       <div class="stat-top">
-        <span style="font-weight:700; font-size:13px;">${b.short}</span>
-        <span class="text-muted" style="font-size:11.5px;">${b.key.replace(" Leave", "")}</span>
+        <span style="font-weight:700; font-size: 0.8125rem;">${b.short}</span>
+        <span class="text-muted" style="font-size: 0.7188rem;">${b.key.replace(" Leave", "")}</span>
       </div>
       <div class="stat-value">${b.balance}</div>
       <div class="stat-label">${b.used} used / ${b.entitlement} total</div>

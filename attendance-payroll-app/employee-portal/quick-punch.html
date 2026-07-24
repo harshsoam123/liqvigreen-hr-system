@@ -24,25 +24,25 @@
     color: #fff; padding: 20px 24px; display: flex; align-items: center; gap: 14px;
   }
   .qp-head img { height: 30px; width: auto; background: #fff; border-radius: 6px; padding: 4px 6px; }
-  .qp-head .qp-title { font-weight: 700; font-size: 15px; }
-  .qp-head .qp-time { margin-left: auto; text-align: right; font-size: 12px; color: #b7ddd2; }
-  .qp-head .qp-time strong { display: block; font-size: 15px; color: #fff; }
+  .qp-head .qp-title { font-weight: 700; font-size: 0.9375rem; }
+  .qp-head .qp-time { margin-left: auto; text-align: right; font-size: 0.75rem; color: #b7ddd2; }
+  .qp-head .qp-time strong { display: block; font-size: 0.9375rem; color: #fff; }
   .qp-body { padding: 24px; }
   .qp-steps { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
   .qp-step { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; position: relative; }
   .qp-step .dot {
     width: 28px; height: 28px; border-radius: 50%; background: var(--muted-bg); color: var(--text-muted);
-    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; border: 2px solid var(--border);
   }
   .qp-step.done .dot { background: var(--primary); color: #fff; border-color: var(--primary); }
-  .qp-step .lbl { font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); }
+  .qp-step .lbl { font-size: 0.625rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); }
   .qp-step-line { position: absolute; top: 14px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: -1; }
   .qp-step.done .qp-step-line { background: var(--primary); }
 
   .qp-type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 4px; }
   .qp-type-btn {
     padding: 14px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--surface-alt);
-    font-weight: 700; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--text);
+    font-weight: 700; font-size: 0.8438rem; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--text);
   }
   .qp-type-btn .dot-icon { width: 8px; height: 8px; border-radius: 50%; }
   .qp-type-btn[data-type="in"] .dot-icon { background: var(--success); }
@@ -53,18 +53,18 @@
 
   .qp-location-box {
     margin-top: 16px; padding: 14px; border-radius: 10px; border: 1.5px solid var(--success); background: var(--success-bg);
-    font-size: 13px; color: var(--success); font-weight: 600;
+    font-size: 0.8125rem; color: var(--success); font-weight: 600;
   }
   .qp-location-box.pending { border-color: var(--border); background: var(--surface-alt); color: var(--text-muted); }
   .qp-location-box.error { border-color: var(--danger); background: var(--danger-bg); color: var(--danger); }
   .qp-device-box {
     margin-top: 12px; padding: 12px 14px; border-radius: 10px; background: var(--surface-alt); border: 1px solid var(--border);
-    font-size: 11.5px; color: var(--text-muted); display: flex; align-items: center; gap: 8px;
+    font-size: 0.7188rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px;
   }
   .qp-device-box .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); flex-shrink: 0; }
-  .qp-device-box code { font-size: 11px; word-break: break-all; }
+  .qp-device-box code { font-size: 0.6875rem; word-break: break-all; }
 
-  .qp-footer { text-align: center; font-size: 11.5px; color: var(--text-muted); margin-top: 18px; }
+  .qp-footer { text-align: center; font-size: 0.7188rem; color: var(--text-muted); margin-top: 18px; }
 </style>
 </head>
 <body>
@@ -75,7 +75,7 @@
       <img src="../assets/branding/logo.jpeg" alt="Liqvigreen" />
       <div>
         <div class="qp-title">Liqvigreen Attendance</div>
-        <div style="font-size:11px; color:#7fe3c4;">● System Active</div>
+        <div style="font-size: 0.6875rem; color:#7fe3c4;">● System Active</div>
       </div>
       <div class="qp-time">
         <strong id="qp-clock">--:--</strong>
@@ -91,9 +91,9 @@
         <div class="qp-step" id="step-4"><div class="qp-step-line"></div><div class="dot">4</div><div class="lbl">Submit</div></div>
       </div>
 
-      <div id="qp-remembered-banner" style="display:none; margin-bottom: 12px; padding: 10px 12px; border-radius: 8px; background: var(--primary-light); color: var(--primary); font-size: 12.5px; display: none; align-items: center; justify-content: space-between; gap: 10px;">
+      <div id="qp-remembered-banner" style="display:none; margin-bottom: 12px; padding: 10px 12px; border-radius: 8px; background: var(--primary-light); color: var(--primary); font-size: 0.7812rem; display: none; align-items: center; justify-content: space-between; gap: 10px;">
         <span>Punching in as <strong id="qp-remembered-name"></strong></span>
-        <button type="button" class="link-primary" id="qp-switch-btn" style="background:none; border:none; font-weight:700; font-size:12.5px; cursor:pointer;">Not you? Switch</button>
+        <button type="button" class="link-primary" id="qp-switch-btn" style="background:none; border:none; font-weight:700; font-size: 0.7812rem; cursor:pointer;">Not you? Switch</button>
       </div>
 
       <div class="form-group" id="qp-name-field-wrap">
@@ -103,7 +103,7 @@
         </select>
       </div>
 
-      <div id="qp-today-status" style="display:none; margin-bottom: 14px; padding: 10px 12px; border-radius: 8px; font-size: 12.5px; font-weight: 600;"></div>
+      <div id="qp-today-status" style="display:none; margin-bottom: 14px; padding: 10px 12px; border-radius: 8px; font-size: 0.7812rem; font-weight: 600;"></div>
 
       <div class="form-group">
         <label>Attendance Type</label>
@@ -114,7 +114,7 @@
       </div>
 
       <div>
-        <label style="font-size:13px; font-weight:600; color:var(--text-muted);">GPS Location</label>
+        <label style="font-size: 0.8125rem; font-weight:600; color:var(--text-muted);">GPS Location</label>
         <div class="qp-location-box pending" id="qp-location-box">Fetching your location...</div>
       </div>
 

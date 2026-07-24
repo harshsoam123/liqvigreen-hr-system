@@ -49,15 +49,15 @@ function injectShell(activeKey, pageTitle, employee) {
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-brand" style="flex-direction: column; align-items: flex-start; gap: 6px;">
         <img class="sidebar-brand-logo" src="../assets/branding/logo.jpeg" alt="Liqvigreen" />
-        <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">Employee Portal</span>
+        <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Employee Portal</span>
       </div>
       <nav class="sidebar-nav">${navLinks}</nav>
       <div class="sidebar-foot">
         <div style="display:flex; align-items:center; gap:10px; padding: 6px 10px 14px;">
           <div class="admin-avatar">${(employee.fullName || "?").charAt(0).toUpperCase()}</div>
           <div style="overflow:hidden;">
-            <div style="font-weight:700; font-size:13.5px; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">${employee.fullName}</div>
-            <div class="text-muted" style="font-size:11.5px;">${employee.empCode}</div>
+            <div style="font-weight:700; font-size: 0.8438rem; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">${employee.fullName}</div>
+            <div class="text-muted" style="font-size: 0.7188rem;">${employee.empCode}</div>
           </div>
         </div>
         <button class="btn btn-outline btn-block" id="emp-logout-btn">${icon("logout")} Logout</button>
@@ -70,7 +70,7 @@ function injectShell(activeKey, pageTitle, employee) {
           <button class="hamburger" id="hamburger-btn">${icon("menu")}</button>
           <div>
             <div class="page-title">${pageTitle}</div>
-            <div class="text-muted" style="font-size:11.5px;">${employee.empCode}</div>
+            <div class="text-muted" style="font-size: 0.7188rem;">${employee.empCode}</div>
           </div>
         </div>
         <div class="topnav-right">

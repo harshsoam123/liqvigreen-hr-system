@@ -106,7 +106,7 @@ function renderTable() {
               ${e.photoUrl ? `<img class="emp-avatar" src="${e.photoUrl}" />` : `<div class="emp-avatar">${(e.fullName || "?").charAt(0)}</div>`}
               <div>
                 <div style="font-weight:600;">${e.fullName}</div>
-                <div class="text-muted" style="font-size:12px;">${e.email || ""}</div>
+                <div class="text-muted" style="font-size: 0.75rem;">${e.email || ""}</div>
               </div>
             </div>
           </td>
@@ -247,7 +247,7 @@ function renderPortalStatus(employee) {
     return;
   }
   if (employee.portalEmail) {
-    badge.innerHTML = `<span class="badge badge-success">Portal Access Active</span> <span class="text-muted" style="font-size:12.5px;">Login: ${employee.portalEmail}</span>`;
+    badge.innerHTML = `<span class="badge badge-success">Portal Access Active</span> <span class="text-muted" style="font-size: 0.7812rem;">Login: ${employee.portalEmail}</span>`;
     resetBtn.style.display = "inline-flex";
   } else {
     badge.innerHTML = `<span class="badge badge-warning">No Portal Access Yet</span>`;

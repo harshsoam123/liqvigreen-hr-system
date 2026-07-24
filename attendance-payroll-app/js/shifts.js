@@ -46,12 +46,12 @@ function renderShifts() {
           <button class="btn-icon delete-btn" title="Delete"><svg viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z" stroke="currentColor" stroke-width="1.6"/></svg></button>
         </div>
       </div>
-      <p style="font-size: 20px; font-weight:700; margin: 0 0 6px;">${s.startTime} - ${s.endTime}</p>
-      <p class="text-muted" style="font-size:13px; margin:0 0 10px;">Grace Time: ${s.graceMinutes || 0} minutes</p>
+      <p style="font-size: 1.25rem; font-weight:700; margin: 0 0 6px;">${s.startTime} - ${s.endTime}</p>
+      <p class="text-muted" style="font-size: 0.8125rem; margin:0 0 10px;">Grace Time: ${s.graceMinutes || 0} minutes</p>
       <div class="meta-chips mb-16">
         ${(s.weeklyOffDays || []).map((d) => `<span class="meta-chip">${d}</span>`).join("") || `<span class="meta-chip">No weekly off set</span>`}
       </div>
-      <p class="text-muted" style="font-size:12.5px;">${s.lateMarkRules || "No late mark rule set."}</p>
+      <p class="text-muted" style="font-size: 0.7812rem;">${s.lateMarkRules || "No late mark rule set."}</p>
       <div class="divider"></div>
       <span class="badge badge-primary">${employeeCounts[s.id] || 0} employees assigned</span>
     </div>`

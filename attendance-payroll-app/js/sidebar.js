@@ -65,8 +65,8 @@ function injectShell(activeKey, pageTitle, user) {
       <nav class="sidebar-nav">${navLinks}</nav>
       <div class="sidebar-foot">
         <button class="btn btn-outline btn-block" id="logout-btn">${icon("logout")} Logout</button>
-        <a href="../employee-portal/index.html" target="_blank" rel="noopener" class="text-muted" style="display:block; text-align:center; font-size:11.5px; margin-top:10px;">Employee Portal ↗</a>
-        <a href="../employee-portal/quick-punch.html" target="_blank" rel="noopener" class="text-muted" style="display:block; text-align:center; font-size:11.5px; margin-top:6px;">Quick Punch (no login) ↗</a>
+        <a href="../employee-portal/index.html" target="_blank" rel="noopener" class="text-muted" style="display:block; text-align:center; font-size: 0.7188rem; margin-top:10px;">Employee Portal ↗</a>
+        <a href="../employee-portal/quick-punch.html" target="_blank" rel="noopener" class="text-muted" style="display:block; text-align:center; font-size: 0.7188rem; margin-top:6px;">Quick Punch (no login) ↗</a>
       </div>
     </aside>
     <div class="overlay-backdrop sidebar-backdrop" id="sidebar-backdrop"></div>

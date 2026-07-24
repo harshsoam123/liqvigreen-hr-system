@@ -158,7 +158,7 @@ function renderTable() {
       (row, idx) => `
     <tr data-idx="${idx}">
       <td>${idx + 1}</td>
-      <td style="font-weight:600;">${row.name}<div class="text-muted" style="font-size:11px;">${row.empCode}</div></td>
+      <td style="font-weight:600;">${row.name}<div class="text-muted" style="font-size: 0.6875rem;">${row.empCode}</div></td>
       <td><input type="number" step="0.5" data-idx="${idx}" data-field="totalLeave" value="${row.totalLeave}" /></td>
       <td><input type="number" step="0.5" data-idx="${idx}" data-field="usedLeaveOpening" value="${row.usedLeaveOpening}" /></td>
       <td class="computed-cell" id="balanceLeave-${idx}">${row.balanceLeave}</td>
@@ -178,7 +178,7 @@ function renderTable() {
       <td>${currency(row.previousAdv)}</td>
       <td><input type="number" step="0.01" data-idx="${idx}" data-field="advDeduction" value="${row.advDeduction}" /></td>
       <td class="computed-cell" id="balanceAdv-${idx}">${currency(row.balanceAdv)}</td>
-      <td class="computed-cell" id="netPay-${idx}" style="font-size:14px;">${currency(row.netPay)}</td>
+      <td class="computed-cell" id="netPay-${idx}" style="font-size: 0.875rem;">${currency(row.netPay)}</td>
     </tr>`
     )
     .join("");

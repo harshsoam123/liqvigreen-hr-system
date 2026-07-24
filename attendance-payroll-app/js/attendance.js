@@ -75,7 +75,7 @@ function renderTable() {
     tbody.innerHTML = pageItems
       .map(({ employee: e, record: r }) => `
         <tr data-emp-id="${e.id}">
-          <td><div style="font-weight:600;">${e.fullName}</div><div class="text-muted" style="font-size:12px;">${e.empCode}</div></td>
+          <td><div style="font-weight:600;">${e.fullName}</div><div class="text-muted" style="font-size: 0.75rem;">${e.empCode}</div></td>
           <td>${e.department || "-"}</td>
           <td>${r ? statusBadge(r.status) : `<span class="badge badge-muted">Not Marked</span>`}</td>
           <td>${r?.checkIn || "-"}</td>
